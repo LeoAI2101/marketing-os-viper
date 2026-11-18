@@ -1,0 +1,17 @@
+{
+  "serialize": true,
+  "min_interval_ms": 1500,
+  "notes": {
+    "what": "Luồng đăng nhập dùng chung mọi vai — KHUÔN, sửa label/nút/khẳng định cho khớp màn đăng nhập thật của sản phẩm ở pha I. Gọi: {\"run_flow\": {\"name\": \"login\", \"with\": {\"user\": \"<vai>@dogfood.local\"}}}.",
+    "serialize_why": "Nhiều làn cùng gõ mật khẩu trong vài trăm mili giây dễ chạm chống dò mật khẩu của IdP và sinh lượt hỏng giả. Đừng xoá serialize vì «thử local thấy không cần».",
+    "password": "{{env.DOGFOOD_PASSWORD}} — giá trị ở deployment/local/.env, hub thay lúc chạy và che trong log."
+  },
+  "steps": [
+    {"goto": "/"},
+    {"fill": {"label": "Email", "value": "{{arg.user}}"}},
+    {"fill": {"label": "Mật khẩu", "value": "{{env.DOGFOOD_PASSWORD}}"}},
+    {"click": {"role": "button", "name": "Đăng nhập"}},
+    {"wait_for": {"idle": true}},
+    {"expect_no_text": "không đúng"}
+  ]
+}

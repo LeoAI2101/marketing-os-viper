@@ -1,0 +1,11 @@
+{
+  "default": "",
+  "default_slice": "",
+  "targets": {},
+  "slices": {},
+  "notes": {
+    "targets": "experience → URL gốc, theo ARCHITECTURE.md §2–§3. Hai dạng: chuỗi URL (\"http://127.0.0.1:3000\") hoặc {\"host_env\", \"host_default\", \"port_env\", \"port_default\"} — tên biến tra ở deployment/local/.env. Vai cũng có thể truyền URL đầy đủ cho `target`.",
+    "slices": "tên lát → đường dẫn tokens.json để df_audit_page đo `values`. Đường intake: intake/design-systems/<ds>/tokens.json. Đường phỏng vấn: xuất bảng DESIGN-SYSTEM.md §2 ra context/dogfood/slices/<ds>.json. Nhiều design system → mỗi gói một lát; giá trị thuộc lát KHÁC bị báo là trộn hai bộ.",
+    "default_slice": "lát mà experience mặc định phải theo — khớp cột Design system ở ARCHITECTURE.md §2."
+  }
+}

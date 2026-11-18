@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "discovery": {
+    "boundaries": "srcroot/boundaries/*",
+    "web-experiences": "srcroot/web-experiences/*",
+    "mobile-experiences": "srcroot/mobile-experiences/*"
+  },
+  "mapping_file": "deployment/gitlab-repo-map.tsv",
+  "schema": ".local/templates/sm_configs.example.py",
+  "env_helpers": [],
+  "derived_env": [],
+  "local_only_env": [],
+  "approval_input_ids": [],
+  "approve_spacing_seconds": 0,
+  "pre_execute_checks": [
+    ["python3", "scripts/gate.py", "P1"],
+    ["make", "check"],
+    ["make", "test"]
+  ],
+  "source_inputs": [],
+  "build_env": {},
+  "devops_injected_env": [],
+  "environments": {
+    "SIT": {"source": null, "sync_command": [], "parameters": {}},
+    "UAT": {"source": "SIT", "pre_execute_checks": [], "parameters": {}},
+    "PT": {"source": "UAT", "pre_execute_checks": [], "parameters": {}},
+    "PREPROD": {"source": "UAT", "pre_execute_checks": [], "parameters": {}},
+    "PROD": {"source": "PREPROD", "pre_execute_checks": [], "parameters": {}, "params_verified": false}
+  }
+}

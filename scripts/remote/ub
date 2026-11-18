@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# ub — chạy một lệnh bất kỳ ở MÁY CHẠY, từ máy giữ code.  `scripts/remote/ub 'docker ps'`
+#
+# Máy giữ code không SSH thẳng sang máy chạy được (NAT/firewall), nhưng máy chạy đã mở
+# -R <ctl>:127.0.0.1:22 nên 127.0.0.1:<ctl> ở đây CHÍNH LÀ sshd của máy chạy.
+set -euo pipefail
+cd "$(dirname "$0")/../.."
+source scripts/remote/_map.sh
+
+[ $# -gt 0 ] || { echo "dùng: scripts/remote/ub '<lệnh>'" >&2; exit 2; }
+
+# Không `exec`: chạy xong in một dòng kết ra STDERR (stdout giữ nguyên cho `$(ub …)`) rồi
+# thoát đúng mã. Tắt dòng kết bằng UB_QUIET=1 khi gọi trong vòng lặp.
+started=$(date +%s); rc=0
+"${RP_SSH[@]}" "$RP_TARGET" "cd '$RP_REPO_RUNNER' && $*" || rc=$?
+if [ -z "${UB_QUIET:-}" ]; then
+  if [ "$rc" = "0" ]; then echo "✅ ub XONG ở $RP_RUNNER_HOST — $(( $(date +%s) - started ))s" >&2
+  else echo "❌ ub DỪNG ở $RP_RUNNER_HOST (mã $rc) — $(( $(date +%s) - started ))s" >&2; fi
+fi
+exit "$rc"

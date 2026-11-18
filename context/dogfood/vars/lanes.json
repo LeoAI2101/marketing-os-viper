@@ -1,0 +1,6 @@
+{
+  "lanes": {},
+  "notes": {
+    "lanes": "Tuỳ chọn: biến riêng của làn cho {{lane.<tên>}}. Thường để trống — khe nhận vai theo đợt, nên tài khoản đi theo VAI: truyền qua run_flow `with`."
+  }
+}

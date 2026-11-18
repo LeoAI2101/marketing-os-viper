@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+# use — chọn máy chạy nào đang ở đầu kia của ống.  CHẠY Ở MÁY GIỮ CODE.
+#
+#   scripts/remote/use              # liệt kê, đánh dấu máy đang dùng, đo máy nào còn sống
+#   scripts/remote/use <tên-máy>    # chuyển sang máy đó
+#
+# Chuyển máy KHÔNG cần chạy lại --install, không đụng known_hosts: mỗi máy giữ bản đồ
+# riêng và cổng ctl riêng, đổi máy chỉ là đổi một con trỏ.
+set -euo pipefail
+cd "$(dirname "$0")/../.."
+
+SLUG="${RP_SLUG:-$(basename "$PWD")}"
+CFG="$HOME/.config/remote-pipe"
+ACTIVE="$CFG/$SLUG.active"
+
+machines() {
+  local f name
+  for f in "$CFG/$SLUG."*.map; do
+    [ -e "$f" ] || continue
+    name="${f##*/"$SLUG".}"
+    printf '%s\n' "${name%.map}"
+  done
+}
+
+ctl_of() { sed -n 's/^ctl=//p' "$CFG/$SLUG.$1.map" 2>/dev/null | head -1; }
+
+# SỐNG = cổng ctl có người nghe ở đây. Đo bằng cách nối thật: bản đồ còn đó không có
+# nghĩa ống còn đó (tmux ở máy chạy không sống qua lần tắt máy).
+liveness() {
+  local ctl; ctl="$(ctl_of "$1")"
+  [ -n "$ctl" ] || { echo "—"; return; }
+  if (exec 3<>"/dev/tcp/127.0.0.1/$ctl") 2>/dev/null; then echo "sống (cổng $ctl)"; else echo "ống tắt (cổng $ctl)"; fi
+}
+
+list_machines() {
+  local current; current="$(cat "$ACTIVE" 2>/dev/null || true)"
+  local found; found="$(machines)"
+  if [ -z "$found" ]; then
+    echo "Chưa dựng ống '$SLUG' với máy nào. Ống mọc từ máy chạy: scripts/remote/README.md §2." >&2
+    exit 1
+  fi
+  printf '%-2s %-34s %-22s %s\n' "" "MÁY" "TRẠNG THÁI" "REPO"
+  local m
+  for m in $found; do
+    printf '%-2s %-34s %-22s %s\n' \
+      "$([ "$m" = "$current" ] && echo '→' || echo ' ')" \
+      "$m" "$(liveness "$m")" \
+      "$(sed -n 's/^repo_runner=//p' "$CFG/$SLUG.$m.map" 2>/dev/null | head -1)"
+  done
+  echo
+  echo "Chuyển:  scripts/remote/use <tên-máy>"
+}
+
+case "${1:-}" in
+  "") list_machines ;;
+  -h|--help) sed -n '2,8p' "$0" ;;
+  *)
+    if [ ! -f "$CFG/$SLUG.$1.map" ]; then
+      echo "✗ Không có bản đồ cho '$1'." >&2; echo >&2; list_machines >&2; exit 1
+    fi
+    mkdir -p "$CFG"
+    printf '%s\n' "$1" > "$ACTIVE"
+    echo "✓ Ống giờ trỏ tới: $1  ·  $(liveness "$1")"
+    if ! (exec 3<>"/dev/tcp/127.0.0.1/$(ctl_of "$1")") 2>/dev/null; then
+      echo
+      echo "  Ống đang tắt. Mở lại — gõ ở CHÍNH máy $1:"
+      echo "      bash ~/.config/remote-pipe/$SLUG.pipe.sh"
+    fi
+    ;;
+esac

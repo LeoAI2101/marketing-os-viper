@@ -1,0 +1,8 @@
+# Repo map MẪU cho test — target giả, nhóm con giả. Không phải cấu hình thật.
+boundaries/d-orders            SAMPLE-BOUNDARIES/d-orders
+boundaries/d-identity-trust    SAMPLE-BOUNDARIES/d-identity-trust
+boundaries/d-one               SAMPLE-BOUNDARIES/d-one
+boundaries/d-two               SAMPLE-BOUNDARIES/d-two
+boundaries/bff-auth-client     SAMPLE-BOUNDARIES/d-bff-auth-client
+web-experiences/ops-console-web        SAMPLE-EXPERIENCES/ops-console-web
+mobile-experiences/sample-mobile-app   SAMPLE-EXPERIENCES/sample-mobile-app

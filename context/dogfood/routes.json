@@ -1,0 +1,6 @@
+{
+  "routes": {},
+  "notes": {
+    "routes": "route → mã màn của PROTOTYPE.md §1 (ví dụ \"/bookings/:id\": \"S4\"), để sổ phủ màn .viper/dogfood/l<N>/coverage.jsonl ghi được màn nào CHƯA vai nào mở. Tuỳ chọn — trống thì sổ ghi path thay mã màn."
+  }
+}

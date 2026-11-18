@@ -1,0 +1,106 @@
+{
+  "version": 1,
+  "discovery": {
+    "boundaries": "srcroot/boundaries/*",
+    "web-experiences": "srcroot/web-experiences/*",
+    "mobile-experiences": "srcroot/mobile-experiences/*"
+  },
+  "mapping_file": "deployment/gitlab-repo-map.tsv",
+  "schema": ".local/templates/sm_configs.example.py",
+  "env_helpers": [
+    "requireEnv"
+  ],
+  "derived_env": [
+    "DATABASE_URL"
+  ],
+  "local_only_env": [],
+  "approval_input_ids": [],
+  "approve_spacing_seconds": 0,
+  "environments": {
+    "SIT": {
+      "source": null,
+      "sync_command": [
+        "bash",
+        "scripts/sync_srcroot_to_gitlab.sh"
+      ],
+      "parameters": {
+        "boundaries": {},
+        "web-experiences": {}
+      }
+    },
+    "UAT": {
+      "source": "SIT",
+      "pre_execute_checks": [],
+      "parameters": {
+        "boundaries": {
+          "SOURCE_ENV": "{source_env}",
+          "RC_TAG": "{rc}",
+          "IMAGE_TAG": "{commit}"
+        },
+        "web-experiences": {
+          "RC_TAG": "{rc}",
+          "SHORT_COMMIT": "{commit}"
+        }
+      }
+    },
+    "PT": {
+      "source": "UAT",
+      "pre_execute_checks": [],
+      "parameters": {
+        "boundaries": {
+          "SOURCE_ENV": "{source_env}",
+          "IMAGE_TAG": "{rc}"
+        },
+        "web-experiences": {
+          "RC_TAG": "{rc}",
+          "SHORT_COMMIT": "{commit}"
+        }
+      }
+    },
+    "PREPROD": {
+      "source": "UAT",
+      "pre_execute_checks": [],
+      "parameters": {
+        "boundaries": {
+          "SOURCE_ENV": "{source_env}",
+          "RC_TAG": "{rc}"
+        },
+        "web-experiences": {
+          "RC_TAG": "{rc}",
+          "SHORT_COMMIT": "{commit}"
+        }
+      }
+    },
+    "PROD": {
+      "source": "PREPROD",
+      "pre_execute_checks": [],
+      "params_verified": true,
+      "parameters": {
+        "boundaries": {
+          "SOURCE_ENV": "{source_env}",
+          "RC_TAG": "{rc}",
+          "RELEASE_TAG": "{release_tag}"
+        },
+        "web-experiences": {
+          "RC_TAG": "{rc}",
+          "RELEASE_TAG": "{release_tag}"
+        }
+      }
+    }
+  },
+  "build_env": {},
+  "pre_execute_checks": [],
+  "source_inputs": [],
+  "devops_injected_env": [
+    "DB_HOST",
+    "DB_PORT",
+    "DB_USERNAME",
+    "DB_PASSWORD",
+    "REDIS_HOST",
+    "REDIS_PORT",
+    "REDIS_AUTH_TOKEN",
+    "KAFKA_SERVERS",
+    "KAFKA_USERNAME",
+    "KAFKA_PASSWORD"
+  ]
+}

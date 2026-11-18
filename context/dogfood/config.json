@@ -1,0 +1,14 @@
+{
+  "tap_min": 44,
+  "forbidden_paths": [],
+  "env_required": ["DOGFOOD_PASSWORD"],
+  "lane_viewports": {},
+  "notes": {
+    "scope": "Dữ liệu của DỰ ÁN cho dogfood_hub (scripts/dogfood_hub/README.md). Hub chỉ lo experience WEB; app mobile chạy trên simulator/emulator qua skill viper-mobile, các vai chạm app chạy TUẦN TỰ.",
+    "loop": "Không cần khai: hub đọc `Vòng : N` ở STATE.md để đặt tên sổ .viper/dogfood/l<N>/. Ghi đè bằng khoá `loop` hoặc biến DF_DOGFOOD_LOOP.",
+    "tap_min": "Ngưỡng chiều cao vùng chạm (px) — lấy từ DESIGN-SYSTEM.md §2 nếu có token vùng chạm.",
+    "forbidden_paths": "Path vai không được mở thẳng (callback SSO, trang quản trị nội bộ…). Ghi kèm lý do ở đây; hub chỉ chặn, không biết vì sao.",
+    "env_required": "Tên biến môi trường kịch bản dùng qua {{env.TÊN}} — giá trị ở deployment/local/.env, KHÔNG khai ở deployment/.env.example (doctor coi tên ở đó là bắt buộc cho cả người chỉ chạy ứng dụng). DOGFOOD_PASSWORD = mật khẩu chung của các tài khoản <vai>@dogfood.local mà seed tạo.",
+    "lane_viewports": "Ghi đè khung nhìn mặc định của làn (slot-1 · slot-2 · slot-3 · main), dạng RỘNGxCAO. Thường để trống: vai cần màn hẹp truyền `viewport` cho từng lượt df_run_scenario."
+  }
+}
